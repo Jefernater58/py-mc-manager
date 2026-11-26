@@ -11,9 +11,18 @@ VERSIONS_URL = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
 INSTANCES_DIR = "./instances/"
 JAVA_DIR = "./java/"
 
-with open("./config.json", "r") as config_file:
-    config_json = json.load(config_file)
+if not pathlib.Path("./config.json").is_file():
+    with open("./config.json", "w") as config_file:
+        config_file.write("{}")
+    config_json = {}
 
+else:
+    with open("./config.json", "r") as config_file:
+        config_json = json.load(config_file)
+
+if not pathlib.Path("./instances.json").is_file():
+    with open("./instances.json", "w") as instances_file:
+        instances_file.write("{}")
 
 parser = argparse.ArgumentParser(
                     prog='py-mc-manager',
@@ -129,7 +138,13 @@ def new_instance():
     with open(instance_dir + "client.jar", "wb") as client_jar:
         client_jar.write(jar_bytes)
 
+    ## update instances.json
+
+
     print(f"done! New instance created at {pathlib.Path(instance_dir).resolve()}")
+
+def run_instance():
+    pass
 
 if args.action == "instance":
     ## check if INSTANCES_DIR exists
@@ -144,7 +159,7 @@ if args.action == "instance":
         new_instance()
 
     elif args.instance_command == "run":
-        pass
+        run_instance()
 
     elif args.instance_command == "delete":
         pass
